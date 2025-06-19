@@ -1,5 +1,5 @@
 #pylint: disable=line-too-long
-"""This example shows how to create a dashboard with multiple gauges"""
+"""This is a client application for monitoring planter data using a radio connection."""
 from nicegui import ui, app
 import radio_data as rd
 import db_conn
@@ -317,6 +317,9 @@ with ui.row():
 ui.separator()
 
 def update_table():
+    '''Update the table and charts with the latest data from the planter.'''
+    # Read the latest data from the planter.
+    # using global variables to refresh charts and table
     global planter_data
     planter_data = rd.read_data()
 
@@ -328,11 +331,13 @@ def update_table():
     'temperature': planter_data['temp'] * 1.8 + 32,
     'humidity': planter_data['humidity']}
 
+    # Update the table with the latest data.
     rows[0]['wetness'] = planterA['wetness']
     rows[0]['temperature'] = planterA['temperature']
     rows[0]['humidity'] = planterA['humidity']
     plant_table.update()
 
+    # Update the charts with the latest data.
     humidity_chart.options['series'][0]['data'][0] = planterA['humidity']
     humidity_chart.update()
     
@@ -342,9 +347,10 @@ def update_table():
     wetness_chart.options['series'][0]['data'][0] = planterA['wetness']
     wetness_chart.update()
 
+    # Push the latest data to the database.
     db_conn.push_data(cursor, planter_data)
 
-
+# Schedule the update_table function to run every 5 seconds.
 app.timer(5, update_table)
 ui.run()
 
