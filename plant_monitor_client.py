@@ -4,12 +4,16 @@ from nicegui import ui, app
 import radio_data as rd
 import db_conn
 
-cursor = db_conn.init_conn()   
+# Initialize the database connection
+cursor = db_conn.init_conn()
 
+# Read the initial data from the planter.
 planter_data = rd.read_data()
 
-db_conn.push_data(cursor, planter_data) 
+# Push the initial data to the database.
+db_conn.push_data(cursor, planter_data)
 
+# Create a table to display the planter data.
 planterA = {
 'id': 1,
 'name': 'Planter A',
@@ -36,7 +40,7 @@ plant_table = ui.table(
 ui.separator()
 ui.label(planterA['name']+':').classes('text-2xl font-bold text-center')
 
-# Create a row of gauges for each planter for soil wetness
+# Create a row of gauges for each planter for soil wetness, temperature, and humidity.
 # The row is created using a for loop that iterates over the list of planters
 with ui.row():
     for planter in [planterA]:
